@@ -6,7 +6,6 @@ PROCESS_VM_OPERATION = 0x0008
 PROCESS_VM_READ = 0x0010
 PROCESS_VM_WRITE = 0x0020
 MAX_PATH = 260
-
 class ReadWriteMemoryError(Exception):
     pass
 class Process(object):
