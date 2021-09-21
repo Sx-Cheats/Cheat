@@ -27,10 +27,6 @@ class Process(object):
         self.handle = windll.kernel32.OpenProcess(dw_desired_access, b_inherit_handle, self.pid)
         if not self.handle:
             raise ReadWriteMemoryError(f'Unable to open process <{self.name}>')
-
-    def close(self):
-        windll.kernel32.CloseHandle(self.handle)
-        return self.get_last_error()
     @staticmethod
     def get_last_error():
         return windll.kernel32.GetLastError()
@@ -55,7 +51,6 @@ class Process(object):
             return read_buffer.value
         except (BufferError, ValueError, TypeError) as error:
             if self.handle:
-                self.close()
             self.error_code = self.get_last_error()
             error = {'msg': str(error), 'Handle': self.handle, 'PID': self.pid,
                      'Name': self.name, 'ErrorCode': self.error_code}
@@ -70,7 +65,6 @@ class Process(object):
             return True
         except (BufferError, ValueError, TypeError) as error:
             if self.handle:
-                self.close()
             self.error_code = self.get_last_error()
             error = {'msg': str(error), 'Handle': self.handle, 'PID': self.pid,
                      'Name': self.name, 'ErrorCode': self.error_code}
