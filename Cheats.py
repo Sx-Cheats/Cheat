@@ -59,7 +59,6 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                         exec(f"self.{VAR} = 'NULL'")
                     self._New_Line()
                 PLAYER_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4)
-                
                 def PRINT_ADRESS(self):
                     self.SHELL_COMMAND  = ""
                     
@@ -72,7 +71,6 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                     self.SHELL_COMMAND +=     "\n\n PLAYER ADRESS (X Y Z) :\n" + f"\nX = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x34))}\nY = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x3C))}\nZ = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x38))}" 
                     self._COMMAND_["print"](None,False)
                     sleep(2)
-                
                 def TP_ALL(self,Team: int = -1):
                         for x in self.BOT_ADRESS:
                             if self.process.read(x+0x32c) != Team:
