@@ -1,6 +1,7 @@
 try:
     import sys,subprocess,re,threading
     from time import sleep
+
     from math import sqrt
     from ctypes import  windll
     import os
@@ -15,11 +16,12 @@ except (ImportError or ImportWarning) as Module:
 class CHEATS(InitUI,ReadWriteMemory,Calc):
      def __init__(self) -> None:
         super(CHEATS,self).__init__()
-        self.BOT_ADRESS  = []
         self._COMMAND_["attach"] = lambda: START()
         self.process = None
-        self.CAMMO = ""  
+        self.CAMMO = ""
+        self.BOT_ADRESS = []
         self.MAX_MAGNITUDE = 65
+        
         self.MouseXX = 0
         self.MouseYY = 0
         self.FreezeValue = None
@@ -39,8 +41,8 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                   for x in self.BOT_ADRESS:
                       self.BOT_ADRESS.remove(x)
               PLAYERS_ONLINE = self.process.read(0x50F500)
-              if PLAYERS_ONLINE == 0: return None
-              return [self.process.get_pointer(self.ENNEMY_OBJ_ADRESS+(0x4*x)) for x in range(PLAYERS_ONLINE)][1:]
+              ENNEMY_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4+4)
+              return [self.process.get_pointer(ENNEMY_OBJ_ADRESS+(0x4*x)) for x in range(PLAYERS_ONLINE)][1:]
         def START():
             NAME =  subprocess.getoutput("powershell -C (Get-Process ac_client).ProcessName")
             if NAME== "ac_client":
@@ -61,15 +63,17 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                         exec(f"self.{VAR} = 'NULL'")
                     self._New_Line()
                 PLAYER_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4)
-                self.ENNEMY_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4+4)
+                
                 def PRINT_ADRESS(self):
                     self.SHELL_COMMAND  = ""
                     
                     if self.BOT_ADRESS.__len__() != self.process.read(0x50F500) or self.BOT_ADRESS.__len__()  == None:
-                        self.BOT_ADRESS = _GET_BOT_()
+                           
+                           self.BOT_ADRESS = _GET_BOT_()
+                    print("BOT ADRESS = ", self.BOT_ADRESS)
                     for x in self.BOT_ADRESS:
                         self.SHELL_COMMAND += "\n\n"+str(hex(x)+f" HEALTH = {self.process.read(x+248)}\n") + f"\nX = {self.process.DEC_TO_FLOAT(self.process.read(x+0x38))}\nY = {self.process.DEC_TO_FLOAT(self.process.read(x+0x3C))}\nZ = {self.process.DEC_TO_FLOAT(self.process.read(x+0x34))}" 
-                    self.SHELL_COMMAND +=     "\n\n PLAYER ADRES (X Y Z) :\n" + f"\nX = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x34))}\nY = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x3C))}\nZ = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x38))}" 
+                    self.SHELL_COMMAND +=     "\n\n PLAYER ADRESS (X Y Z) :\n" + f"\nX = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x34))}\nY = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x3C))}\nZ = {self.process.DEC_TO_FLOAT(self.process.read(PLAYER_OBJ_ADRESS+0x38))}" 
                     self._COMMAND_["print"](None,False)
                     sleep(2)
                 
@@ -99,13 +103,13 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                             for x in self.BOT_ADRESS:       
                                 BOT_COORD = (self.process.DEC_TO_FLOAT(read(x+0x38)), self.process.DEC_TO_FLOAT(read(x+0x3C)),self.process.DEC_TO_FLOAT(read(x+0x34)))
                                 MAGNITUDE = [Magnitude(PLAYER_COORD,BOT_COORD),read(x+0xF8)]
-                                if   ((MAGNITUDE[1] >= 4294967286) or (MAGNITUDE[1] <= 0)): continue
-                                elif self.MAX_MAGNITUDE >= MAGNITUDE[0] <= MG and 0 < MAGNITUDE[1] <= 100:
+                                if   ((MAGNITUDE[1] >= 4294967286) or (MAGNITUDE[1] <= 1)): continue
+                                elif self.MAX_MAGNITUDE >= MAGNITUDE[0] <= MG and 1 < MAGNITUDE[1] <= 100:
                                     MG = MAGNITUDE [0]   
-                                    self.TARGET = BOT_COORD   
+                                    self.TARGET = BOT_COORD  
                             self.X,self.Y = self.ANGLE(PLAYER_COORD,self.TARGET)
+                            self.X,self.Y,self.MAGNITUDE = self.process.FLOAT_TO_DEC(self.X),self.process.FLOAT_TO_DEC(self.Y),MG
                             MG = 1e10
-                            self.X,self.Y = self.process.FLOAT_TO_DEC(self.X),self.process.FLOAT_TO_DEC(self.Y)
                 def BlockValue():
                     while self._New_Line != None:
                         try:
@@ -118,7 +122,7 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                                     self.process.write(self.Grenade_Adress,self.CGRENADE)
                             if  type(self.CARMOR) == int:
                                 self.process.write(self.Armor_Adress,self.CARMOR)
-                            if  type(self.X) == int and self.AIMBOT:
+                            if  type(self.X) == int and self.AIMBOT and  self.MAGNITUDE <= self.MAX_MAGNITUDE:
                                 self.process.write(self.MouseX,self.X)
                                 self.process.write(self.MouseY,self.Y)
                         except:
@@ -139,6 +143,7 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                 self._COMMAND_["tpennemy"] =  lambda: TP_ALL(self,self.process.read(PLAYER_OBJ_ADRESS+0x32c))
                 self._COMMAND_["aimbot"] =  lambda: WRITE(self,'AIMBOT',not self.AIMBOT,False,0)
                 self._COMMAND_["exit"] = lambda: CLOSE()
+
                 threading.Thread(target=BlockValue).start()
                 threading.Thread(target=AimBot).start()
             else:
@@ -146,8 +151,7 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                 self._COMMAND_["print"]("(251, 0, 0")
         self.BackGroundMenu.show()
         sys.exit(self.app.exec_())
-            
-
+        
 __import__("ctypes").windll.user32.ShowWindow(__import__("ctypes").windll.kernel32.GetConsoleWindow(),0)
 CHEATS()
 
