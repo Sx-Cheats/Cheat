@@ -1,18 +1,19 @@
 import os.path
 from  ctypes  import *
+
 PROCESS_QUERY_INFORMATION = 0x0400
 PROCESS_VM_OPERATION = 0x0008
 PROCESS_VM_READ = 0x0010
 PROCESS_VM_WRITE = 0x0020
 MAX_PATH = 260
+
 class ReadWriteMemoryError(Exception):
     pass
 class Process(object):
-    def __init__(self, name = '', pid = -1, handle = -1, error_code = None):
+    def __init__(self, name = '', pid = -1, handle = -1):
         self.name = name
         self.pid = pid
         self.handle = handle
-        self.error_code = error_code
         self.ReadProcessMemory = windll.kernel32.ReadProcessMemory
         self.WriteProcessMemory = windll.kernel32.WriteProcessMemory
     def __repr__(self) :
@@ -27,9 +28,6 @@ class Process(object):
         self.handle = windll.kernel32.OpenProcess(dw_desired_access, b_inherit_handle, self.pid)
         if not self.handle:
             raise ReadWriteMemoryError(f'Unable to open process <{self.name}>')
-    @staticmethod
-    def get_last_error():
-        return windll.kernel32.GetLastError()
 
     def get_pointer(self, lp_base_address: hex, offsets = []) :
         temp_address = self.read(lp_base_address)
@@ -51,9 +49,9 @@ class Process(object):
             return read_buffer.value
         except (BufferError, ValueError, TypeError) as error:
             if self.handle:
-            self.error_code = self.get_last_error()
+                self.close()
             error = {'msg': str(error), 'Handle': self.handle, 'PID': self.pid,
-                     'Name': self.name, 'ErrorCode': self.error_code}
+                     'Name': self.name}
             ReadWriteMemoryError(error)
     def write(self, lp_base_address, value) :
         try:
@@ -65,10 +63,11 @@ class Process(object):
             return True
         except (BufferError, ValueError, TypeError) as error:
             if self.handle:
-            self.error_code = self.get_last_error()
+                self.close()
             error = {'msg': str(error), 'Handle': self.handle, 'PID': self.pid,
-                     'Name': self.name, 'ErrorCode': self.error_code}
+                     'Name': self.name}
             ReadWriteMemoryError(error)
+            
 class ReadWriteMemory:
     def __init__(self):
         self.handle = None
