@@ -1,4 +1,3 @@
-
 from math import cos,acos,sin,asin,tan,atan,sqrt,pi
 class Calc(): 
     def __init__(self) -> None:
