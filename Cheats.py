@@ -1,7 +1,6 @@
 try:
     import sys,subprocess,re,threading
     from time import sleep
-
     from math import sqrt
     from ctypes import  windll
     import os
@@ -19,10 +18,8 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
         self.BOT_ADRESS  = []
         self._COMMAND_["attach"] = lambda: START()
         self.process = None
-        self.CAMMO = ""
-        
+        self.CAMMO = ""  
         self.MAX_MAGNITUDE = 65
-        
         self.MouseXX = 0
         self.MouseYY = 0
         self.FreezeValue = None
@@ -34,13 +31,9 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
             if self.process:
               windll.kernel32.CloseHandle(self.process.handle)
             os._exit(0)
-
         self.UI.BP_EXIT.clicked.connect(lambda:CLOSE())
-       
-
         def Magnitude(X0:tuple=(0,0,0),X1:tuple = (1,1,1)):
                 return sqrt(sum([(x[0]-x[1])**2 for x in list(zip(X1,X0))]))
-
         def _GET_BOT_():
               if self.BOT_ADRESS.__len__() > 0:
                   for x in self.BOT_ADRESS:
@@ -146,7 +139,6 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                 self._COMMAND_["tpennemy"] =  lambda: TP_ALL(self,self.process.read(PLAYER_OBJ_ADRESS+0x32c))
                 self._COMMAND_["aimbot"] =  lambda: WRITE(self,'AIMBOT',not self.AIMBOT,False,0)
                 self._COMMAND_["exit"] = lambda: CLOSE()
-
                 threading.Thread(target=BlockValue).start()
                 threading.Thread(target=AimBot).start()
             else:
