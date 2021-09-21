@@ -1,18 +1,15 @@
 try:
     import sys,subprocess,re,threading
     from time import sleep
-
     from math import sqrt
-    from ctypes import  windll
+    from ctypes import windll
     import os
     sys.path.append(sys.path[0] + r"\Include")
     from Calc_Angle import Calc
     from  MemoryWrite  import ReadWriteMemory
     from __Init_CMD__ import InitUI
 except (ImportError or ImportWarning) as Module:
-    print(f"Please Install:\n\n-{Module.msg.replace('No module named','')}")
-    input()
-    
+    print(f"Please Install:\n\n-{Module.msg.replace('No module named','')}") 
 class CHEATS(InitUI,ReadWriteMemory,Calc):
      def __init__(self) -> None:
         super(CHEATS,self).__init__()
@@ -21,7 +18,6 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
         self.CAMMO = ""
         self.BOT_ADRESS = []
         self.MAX_MAGNITUDE = 65
-        
         self.MouseXX = 0
         self.MouseYY = 0
         self.FreezeValue = None
@@ -143,7 +139,6 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                 self._COMMAND_["tpennemy"] =  lambda: TP_ALL(self,self.process.read(PLAYER_OBJ_ADRESS+0x32c))
                 self._COMMAND_["aimbot"] =  lambda: WRITE(self,'AIMBOT',not self.AIMBOT,False,0)
                 self._COMMAND_["exit"] = lambda: CLOSE()
-
                 threading.Thread(target=BlockValue).start()
                 threading.Thread(target=AimBot).start()
             else:
@@ -152,7 +147,8 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
         self.BackGroundMenu.show()
         sys.exit(self.app.exec_())
         
-__import__("ctypes").windll.user32.ShowWindow(__import__("ctypes").windll.kernel32.GetConsoleWindow(),0)
+#__import__("ctypes").windll.user32.ShowWindow(__import__("ctypes").windll.kernel32.GetConsoleWindow(),0)
+
 CHEATS()
 
 
