@@ -1,7 +1,6 @@
 
 from math import cos,acos,sin,asin,tan,atan,sqrt,pi
-class Calc():
-    
+class Calc(): 
     def __init__(self) -> None:
         pass 
     def ANGLE(self,_PLAYER:tuple=(0,0,0),_TARGET:tuple=(0,0,0)):
