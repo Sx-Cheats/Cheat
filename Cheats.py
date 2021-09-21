@@ -40,7 +40,7 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
               ENNEMY_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4+4)
               return [self.process.get_pointer(ENNEMY_OBJ_ADRESS+(0x4*x)) for x in range(PLAYERS_ONLINE)][1:]
         def START():
-            NAME =  subprocess.getoutput("powershell -C (Get-Process ac_client).ProcessName")
+            NAME =  subprocess.getoutput("powershell -c (Get-Process ac_client).ProcessName")
             if NAME== "ac_client":
                 rwm = ReadWriteMemory()
                 self._COMMAND_.pop("attach")
