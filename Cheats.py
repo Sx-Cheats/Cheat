@@ -42,11 +42,10 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
         def START():
             NAME =  subprocess.getoutput("powershell -c (Get-Process ac_client).ProcessName")
             if NAME== "ac_client":
-                rwm = ReadWriteMemory()
                 self._COMMAND_.pop("attach")
                 self.SHELL_COMMAND = "-ac_client.exe has been found"
                 self._COMMAND_["print"]("(45, 255, 134",False)
-                self.process = rwm.get_process_by_name(NAME)
+                self.process = ReadWriteMemory().get_process_by_name(NAME)
                 self.process.open()
                 def WRITE(self,VAR,VALUE,SET = False,ADRESS = 0x0):  
                     if SET and ADRESS != 0:
