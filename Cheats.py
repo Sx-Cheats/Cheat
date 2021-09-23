@@ -60,9 +60,7 @@ class CHEATS(InitUI,ReadWriteMemory,Calc):
                 PLAYER_OBJ_ADRESS = self.process.get_pointer(0x400000 + 0x10F4F4)
                 def PRINT_ADRESS(self):
                     self.SHELL_COMMAND  = ""
-                    
                     if self.BOT_ADRESS.__len__() != self.process.read(0x50F500) or self.BOT_ADRESS.__len__()  == None:
-                           
                            self.BOT_ADRESS = _GET_BOT_()
                     print("BOT ADRESS = ", self.BOT_ADRESS)
                     for x in self.BOT_ADRESS:
