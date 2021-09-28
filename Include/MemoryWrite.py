@@ -72,7 +72,7 @@ class ReadWriteMemory:
         self.handle = None
         self.process = Process()
     def get_process_by_name(self, NAME):
-        self.process.pid    = eval(__import__("subprocess").getoutput(f"powershell -Command (Get-Process -ProcessName {NAME}).Id"))
+        self.process.pid    = eval(__import__("subprocess").getoutput(f"powershell -c (Get-Process -ProcessName {NAME}).Id"))
         self.process.handle = windll.kernel32.OpenProcess(PROCESS_QUERY_INFORMATION, False, self.process.pid)
         self.process.name = NAME +".exe"    
         return self.process
